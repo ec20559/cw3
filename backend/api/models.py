@@ -23,3 +23,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+class NewsArticle(models.Model):
+    title = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='news_images/', null=True, blank=True)
+    topic = models.CharField(max_length=100)
+    contents = models.TextField()

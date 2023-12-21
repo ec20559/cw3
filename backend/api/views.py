@@ -7,6 +7,12 @@ from .forms import SignupForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+
+from rest_framework import generics, serializers
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import NewsArticle
+
 class SignupView(CreateView):
     form_class = SignupForm
     template_name = 'registration/signup.html'
@@ -40,3 +46,14 @@ def get_user_profile(request):
     response["Access-Control-Allow-Origin"] = "http://localhost:5173"
     response["Access-Control-Allow-Credentials"] = "true"
     return response
+
+class NewsArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsArticle
+        fields = '__all__'
+
+@api_view(['GET'])
+def get_articles(request):
+    articles = NewsArticle.objects.all()
+    serializer = NewsArticleSerializer(articles, many=True)
+    return JsonResponse(serializer.data, safe=False, content_type='application/json')
